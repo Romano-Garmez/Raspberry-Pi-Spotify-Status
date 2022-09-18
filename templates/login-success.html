@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block main %}
+Login Successful!
+
+<script>
+    this.token = window.location.hash.substr(1).split('&')[0].split("=")[1]
+
+    if (this.token) {
+        alert(this.token)
+    }
+</script>
+
+
+{% endblock %}
