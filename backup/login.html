@@ -19,13 +19,12 @@
     <link href="/static/styles.css" rel="stylesheet">
 
     <title>Main Page</title>
-    
+
+    <script src="static/auth.js"></script>
 </head>
 
 <body>
-    {% block main %}{% endblock %}
-    {{ me }}
-
+    <button onclick="login()">Login with Spotify</button>
 </body>
 
 </html>

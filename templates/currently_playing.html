@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+
+{% block main %}
+<h2>{{title}}</h2>
+<h2>{{artist}}</h2>
+<h2>{{album}}</h2>
+<img src="{{art_url}}" crossorigin="anonymous">
+
+<p></p>
+<pre>
+<!--{{json}} -->
+</pre>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+<script>
+    const colorThief = new ColorThief();
+    const img = document.querySelector('img');
+
+    // Make sure image is finished loading
+    if (img.complete) {
+        var backgroundColor = colorThief.getColor(img);
+        console.log(backgroundColor)
+        document.body.style.backgroundColor = 'rgb(' + backgroundColor[0] + ',' + backgroundColor[1] + ',' + backgroundColor[2] + ')';
+    } else {
+        image.addEventListener('load', function () {
+            var backgroundColor = colorThief.getColor(img);
+            console.log(backgroundColor)
+            document.body.style.backgroundColor = 'rgb(' + backgroundColor[0] + ',' + backgroundColor[1] + ',' + backgroundColor[2] + ')';
+        });
+    }
+</script>
+
+<!-- id={{id}} -->
+
+<script>
+    function reqListener() {
+        if (this.responseText === "different") {
+            location.reload();
+        }
+    }
+
+    function compareTrack() {
+        const req = new XMLHttpRequest();
+        req.addEventListener("load", reqListener);
+        req.open("GET", "/current_track_xhr?id={{id}}");
+        req.send();
+    }
+
+    const interval = setInterval(function () {
+        compareTrack()
+    }, 2000);
+</script>
+{% endblock %}
