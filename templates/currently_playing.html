@@ -20,12 +20,10 @@
     // Make sure image is finished loading
     if (img.complete) {
         var backgroundColor = colorThief.getColor(img);
-        console.log(backgroundColor)
         document.body.style.backgroundColor = 'rgb(' + backgroundColor[0] + ',' + backgroundColor[1] + ',' + backgroundColor[2] + ')';
     } else {
         image.addEventListener('load', function () {
             var backgroundColor = colorThief.getColor(img);
-            console.log(backgroundColor)
             document.body.style.backgroundColor = 'rgb(' + backgroundColor[0] + ',' + backgroundColor[1] + ',' + backgroundColor[2] + ')';
         });
     }
