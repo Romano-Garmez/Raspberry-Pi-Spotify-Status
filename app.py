@@ -135,6 +135,12 @@ def pause():
     spotify.pause_playback()
     return redirect('/currently_playing')
 
+@app.route('/skip')
+def skip():
+    spotify = getSpotify()
+    spotify.next_track()
+    return redirect('/currently_playing')
+
 
 def getSpotify():
     cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
