@@ -13,7 +13,7 @@ Prerequisites
     export FLASK_ENV=development
     // so that you can invoke the app outside of the file's directory include
     export FLASK_APP=/path/to/spotipy/examples/app.py
- 
+
     // on Windows, use `SET` instead of `export`
 
 Run app.py
@@ -67,22 +67,13 @@ def sign_out():
 
 @app.route('/playlists')
 def playlists():
-    cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
-    auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        return redirect('/')
-
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
+    spotify = getSpotify()
     return spotify.current_user_playlists()
 
 
 @app.route('/currently_playing')
 def currently_playing():
-    cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
-    auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        return redirect('/')
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
+    spotify = getSpotify()
     track = spotify.current_user_playing_track()
     if not track is None:
         title = track["item"]["name"]
@@ -97,21 +88,13 @@ def currently_playing():
 
 @app.route('/current_user')
 def current_user():
-    cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
-    auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        return redirect('/')
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
+    spotify = getSpotify()
     return spotify.current_user()
 
 
 @app.route('/current_track_xhr')
 def current_track_xhr():
-    cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
-    auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        return redirect('/')
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
+    spotify = getSpotify()
     track = spotify.current_user_playing_track()
     new_id = track["item"]["id"]
     id = request.args.get("id")
@@ -138,3 +121,24 @@ def get_artists(artists_json):
     for artist in artists_json:
         artists.append(artist["name"])
     return ", ".join(artists)
+
+
+@app.route('/play')
+def play():
+    spotify = getSpotify()
+    spotify.start_playback()
+    return redirect('/currently_playing')
+
+@app.route('/pause')
+def pause():
+    spotify = getSpotify()
+    spotify.pause_playback()
+    return redirect('/currently_playing')
+
+
+def getSpotify():
+    cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
+    auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
+    if not auth_manager.validate_token(cache_handler.get_cached_token()):
+        return redirect('/')
+    return spotipy.Spotify(auth_manager=auth_manager)
