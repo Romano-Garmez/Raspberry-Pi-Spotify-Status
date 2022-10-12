@@ -2,10 +2,16 @@
 
 
 {% block main %}
+<img src="{{art_url}}" crossorigin="anonymous">
 <h2>{{title}}</h2>
 <h2>{{artist}}</h2>
 <h2>{{album}}</h2>
-<img src="{{art_url}}" crossorigin="anonymous">
+
+{% if currently_playing %}
+<a href="">Pause</a>
+{% else %}
+<a href="">Play</a>
+{% endif %}
 
 <p></p>
 <pre>
@@ -22,7 +28,7 @@
         var backgroundColor = colorThief.getColor(img);
         document.body.style.backgroundColor = 'rgb(' + backgroundColor[0] + ',' + backgroundColor[1] + ',' + backgroundColor[2] + ')';
     } else {
-        image.addEventListener('load', function () {
+        img.addEventListener('load', function () {
             var backgroundColor = colorThief.getColor(img);
             document.body.style.backgroundColor = 'rgb(' + backgroundColor[0] + ',' + backgroundColor[1] + ',' + backgroundColor[2] + ')';
         });
@@ -41,7 +47,7 @@
     function compareTrack() {
         const req = new XMLHttpRequest();
         req.addEventListener("load", reqListener);
-        req.open("GET", "/current_track_xhr?id={{id}}");
+        req.open("GET", "/current_track_xhr?id={{id}}&currently_playing={{currently_playing}}");
         req.send();
     }
 

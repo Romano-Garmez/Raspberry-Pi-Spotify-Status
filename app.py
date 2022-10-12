@@ -40,7 +40,7 @@ Session(app)
 def index():
 
     cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
-    auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-read-currently-playing playlist-modify-private',
+    auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-read-currently-playing playlist-modify-private user-modify-playback-state',
                                                cache_handler=cache_handler,
                                                show_dialog=True)
 
@@ -90,7 +90,8 @@ def currently_playing():
         album = track["item"]["album"]["name"]
         art_url = track["item"]["album"]["images"][0]["url"]
         id = track["item"]["id"]
-        return render_template("currently_playing.html", title=title, artist=artist, album=album, art_url=art_url, id=id, json=json.dumps(track, indent=2))
+        currently_playing = track["is_playing"]
+        return render_template("currently_playing.html", title=title, artist=artist, album=album, art_url=art_url, id=id, currently_playing=currently_playing, json=json.dumps(track, indent=2))
     return "No track currently playing."
 
 
@@ -113,12 +114,13 @@ def current_track_xhr():
     spotify = spotipy.Spotify(auth_manager=auth_manager)
     track = spotify.current_user_playing_track()
     new_id = track["item"]["id"]
-    id=request.args.get("id")
-    if id == new_id:
+    id = request.args.get("id")
+    new_currently_playing = track["is_playing"]
+    currently_playing = request.args.get("currently_playing") == 'True'
+    if id == new_id and currently_playing == new_currently_playing:
         return "same"
     else:
         return "different"
-
 
 
 '''
