@@ -15,9 +15,18 @@
 
 <a href="/skip" class="btn btn-light">Skip</a>
 
+{% if liked %}
+<a href="/unlike?id={{id}}" class="btn btn-light">Unlike</a>
+{% else %}
+<a href="/like?id={{id}}" class="btn btn-light">Like</a>
+{% endif %}
+
 <p></p>
 <pre>
-<!--{{json}} -->
+
+<!--
+    {{json}} 
+-->
 </pre>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>

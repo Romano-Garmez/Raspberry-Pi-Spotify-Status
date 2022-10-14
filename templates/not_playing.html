@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+
+{% block main %}
+
+
+wooo nothing is playing rn
+
+
+<script>
+    function reqListener() {
+        if (this.responseText === "different") {
+            location.reload();
+        }
+    }
+
+    function compareTrack() {
+        const req = new XMLHttpRequest();
+        req.addEventListener("load", reqListener);
+        req.open("GET", "/current_track_xhr?currently_playing=False");
+        req.send();
+    }
+
+    const interval = setInterval(function () {
+        compareTrack()
+    }, 2000);
+</script>
+{% endblock %}

@@ -40,7 +40,7 @@ Session(app)
 def index():
 
     cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
-    auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-read-currently-playing playlist-modify-private user-modify-playback-state',
+    auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-read-currently-playing playlist-modify-private user-modify-playback-state user-library-read user-library-modify playlist-modify-private playlist-modify-public',
                                                cache_handler=cache_handler,
                                                show_dialog=True)
 
@@ -81,9 +81,10 @@ def currently_playing():
         album = track["item"]["album"]["name"]
         art_url = track["item"]["album"]["images"][0]["url"]
         id = track["item"]["id"]
+        liked = spotify.current_user_saved_tracks_contains(tracks=[id])[0]
         currently_playing = track["is_playing"]
-        return render_template("currently_playing.html", title=title, artist=artist, album=album, art_url=art_url, id=id, currently_playing=currently_playing, json=json.dumps(track, indent=2))
-    return "No track currently playing."
+        return render_template("currently_playing.html", title=title, artist=artist, album=album, art_url=art_url, id=id, currently_playing=currently_playing, liked=liked, json=json.dumps(track, indent=2))
+    return render_template("not_playing.html")
 
 
 @app.route('/current_user')
@@ -96,15 +97,21 @@ def current_user():
 def current_track_xhr():
     spotify = getSpotify()
     track = spotify.current_user_playing_track()
-    new_id = track["item"]["id"]
-    id = request.args.get("id")
-    new_currently_playing = track["is_playing"]
+    if not track is None:
+        new_id = track["item"]["id"]
+        id = request.args.get("id")
+        new_currently_playing = track["is_playing"]
+        currently_playing = request.args.get("currently_playing") == 'True'
+        if id == new_id and currently_playing == new_currently_playing:
+            return "same"
+        else:
+            return "different"
+    new_currently_playing = False
     currently_playing = request.args.get("currently_playing") == 'True'
-    if id == new_id and currently_playing == new_currently_playing:
+    if currently_playing == new_currently_playing:
         return "same"
     else:
         return "different"
-
 
 '''
 Following lines allow application to be run more conveniently with
@@ -139,6 +146,20 @@ def pause():
 def skip():
     spotify = getSpotify()
     spotify.next_track()
+    return redirect('/currently_playing')
+
+@app.route('/like')
+def like():
+    spotify = getSpotify()
+    id = request.args.get("id")
+    spotify.current_user_saved_tracks_add(tracks=[id])
+    return redirect('/currently_playing')
+
+@app.route('/unlike')
+def unlike():
+    spotify = getSpotify()
+    id = request.args.get("id")
+    spotify.current_user_saved_tracks_delete(tracks=[id])
     return redirect('/currently_playing')
 
 
