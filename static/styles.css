@@ -1,0 +1,50 @@
+#left {
+    width: 50%;
+    float: left;
+    border-style: solid;
+}
+
+#right {
+    float: right;
+    border-style: solid;
+    width:50%;
+    height:75%;
+}
+
+.center {
+    display: inline-block;
+    margin: 0 auto;
+    border-style: solid;
+    text-align: center;
+    
+}
+
+#text {
+    float: left;
+    clear: both;
+    width:100%;
+    height: 75%;
+    padding:20%;
+
+}
+
+#buttons {
+    float: left;
+    clear: both;
+    width:100%;
+    height: 25%;
+}
+
+#outer{
+    border-style: solid;
+    width: 100%;
+    display : flex;
+}
+#album-art{
+    width:100%;
+}
+
+#temp{
+    width:100%;
+    height: 100%;
+}
