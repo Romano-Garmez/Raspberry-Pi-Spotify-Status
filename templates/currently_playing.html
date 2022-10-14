@@ -33,17 +33,44 @@
 <script>
     const colorThief = new ColorThief();
     const img = document.querySelector('img');
+    function avg(color) {
+        return (color[0] + color[1] + color[2]) / 3;
+    }
+    function setColors() {
+        var backgroundColor = colorThief.getColor(img);
+        var textColorArray = colorThief.getPalette(img);
+        document.body.style.backgroundColor = 'rgb(' + backgroundColor[0] + ',' + backgroundColor[1] + ',' + backgroundColor[2] + ')';
+        var backgroundColorAvg = avg(backgroundColor);
+        var backgroundIsDark = backgroundColorAvg < 170;
+        var darkestColor = [255, 255, 255];
+        var lightestColor = [0, 0, 0];
+        for (let i = 0; i < textColorArray.length; i++) {
+            var textColorAvg = avg(textColorArray[i]);
+            if (textColorAvg > (avg(lightestColor))) {
+                lightestColor = textColorArray[i];
+            }
+            if (textColorAvg < (avg(darkestColor))) {
+                darkestColor = textColorArray[i];
+            }
+        }
+        var textColor = null;
+        if (backgroundIsDark) {
+            textColor = lightestColor;
+        } else {
+            textColor = darkestColor;
+        }
+        document.body.style.color = 'rgb(' + textColor[0] + ',' + textColor[1] + ',' + textColor[2] + ')';
+    }
 
     // Make sure image is finished loading
     if (img.complete) {
-        var backgroundColor = colorThief.getColor(img);
-        document.body.style.backgroundColor = 'rgb(' + backgroundColor[0] + ',' + backgroundColor[1] + ',' + backgroundColor[2] + ')';
+        setColors();
     } else {
         img.addEventListener('load', function () {
-            var backgroundColor = colorThief.getColor(img);
-            document.body.style.backgroundColor = 'rgb(' + backgroundColor[0] + ',' + backgroundColor[1] + ',' + backgroundColor[2] + ')';
+            setColors();
         });
     }
+
 </script>
 
 <!-- id={{id}} -->
