@@ -30,12 +30,13 @@
     float: left;
     clear: both;
     width:100%;
-    height: 10%;
+    height: 20%;
 }
 
 #outer{
     width: 100%;
     display : flex;
+    padding:5%;
 }
 #album-art{
     width:100%;
@@ -43,20 +44,26 @@
 
 #text-outer{
     width:100%;
-    height: 90%;
+    height: 80%;
     display:table;
 }
 
 .title{
     font-weight: 900;
-    font-size: 5em;
+    font-size: 6vw;
 }
 
 .artist{
     font-weight: 400;
+    font-size: 3.5vw;
 }
 
 .album{
     font-weight: 400;
     opacity: 0.75;
+    font-size: 3.5vw;
+}
+
+.material-icons{
+    font-size:48px;
 }

@@ -16,17 +16,18 @@
     </div>
         <div id="buttons" class="center">
             {% if currently_playing %}
-            <a href="/pause" class="btn btn-light">Pause</a>
+            
+            <a href="/pause" class="btn btn-default media-control-button"><i class="material-icons">pause</i></a>
             {% else %}
-            <a href="/play" class="btn btn-light">Play</a>
+            <a href="/play" class="btn btn-default media-control-button"><i class="material-icons">play_arrow</i></a>
             {% endif %}
 
-            <a href="/skip" class="btn btn-light">Skip</a>
+            <a href="/skip" class="btn btn-default media-control-button"><i class="material-icons">skip_next</i></a>
 
             {% if liked %}
-            <a href="/unlike?id={{id}}" class="btn btn-light">Unlike</a>
+            <a href="/unlike?id={{id}}" class="btn btn-default media-control-button"><i class="material-icons">favorite</i></a>
             {% else %}
-            <a href="/like?id={{id}}" class="btn btn-light">Like</a>
+            <a href="/like?id={{id}}" class="btn btn-default media-control-button"><i class="material-icons">favorite_border</i></a>
             {% endif %}
         </div>
     </div>
@@ -70,6 +71,10 @@
             textColor = darkestColor;
         }
         document.body.style.color = 'rgb(' + textColor[0] + ',' + textColor[1] + ',' + textColor[2] + ')';
+        var buttons = document.getElementsByClassName("media-control-button");
+        for (var i = 0; i < buttons.length; i++){
+            buttons[i].style.color= 'rgb(' + textColor[0] + ',' + textColor[1] + ',' + textColor[2] + ')';
+        }
     }
 
     // Make sure image is finished loading
