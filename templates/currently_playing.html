@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 
+{%block title %}
+<title>Currently Playing</title>
+{%endblock%}
 
 {% block main %}
 <div id="outer">
@@ -37,9 +40,6 @@
 <p></p>
 <pre>
 
-<!--
-    {{json}} 
--->
 </pre>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
@@ -90,8 +90,6 @@
 
 </script>
 
-<!-- id={{id}} -->
-
 <script>
     function reqListener() {
         if (this.responseText === "different") {
@@ -108,8 +106,6 @@
         } catch (error) {
             console.log("Unable to reach server");
         }
-
-
     }
 
     const interval = setInterval(function () {
