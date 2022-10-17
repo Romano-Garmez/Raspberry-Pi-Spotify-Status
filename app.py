@@ -22,7 +22,6 @@ Run app.py
     NOTE: If receiving "port already in use" error, try other ports: 5000, 8090, 8888, etc...
         (will need to be updated in your Spotify app and SPOTIPY_REDIRECT_URI variable)
 """
-
 import os
 from flask import Flask, session, request, redirect, render_template
 from flask_session import Session
@@ -34,6 +33,9 @@ app.config['SECRET_KEY'] = os.urandom(64)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_FILE_DIR'] = './.flask_session/'
 Session(app)
+maxTitleLength = 35
+maxArtistLength = 35
+maxAlbumLength = 35
 
 
 @app.route('/')
@@ -72,6 +74,12 @@ def currently_playing():
         title = track["item"]["name"]
         artist = get_artists(track["item"]["artists"])
         album = track["item"]["album"]["name"]
+        if len(title) > maxTitleLength:
+            title = shortenText(title, maxTitleLength)
+        if len(artist) > maxArtistLength:
+            artist = shortenText(artist, maxArtistLength)
+        if len(album) > maxAlbumLength:
+            album = shortenText(album, maxAlbumLength)
         art_url = track["item"]["album"]["images"][0]["url"]
         id = track["item"]["id"]
         liked = spotify.current_user_saved_tracks_contains(tracks=[id])[0]
@@ -98,15 +106,6 @@ def current_track_xhr():
         return "same"
     else:
         return "different"
-
-'''
-Following lines allow application to be run more conveniently with
-`python app.py` (Make sure you're using python3)
-(Also includes directive to leverage pythons threading capacity.)
-'''
-if __name__ == '__main__':
-    app.run(threaded=True, port=int(os.environ.get("PORT",
-                                                   os.environ.get("SPOTIPY_REDIRECT_URI", 5000).split(":")[-1])))
 
 
 def get_artists(artists_json):
@@ -155,3 +154,15 @@ def getSpotify():
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         return redirect('/')
     return spotipy.Spotify(auth_manager=auth_manager)
+
+def shortenText(string, length):
+    return string[:length] + "..."
+
+'''
+Following lines allow application to be run more conveniently with
+`python app.py` (Make sure you're using python3)
+(Also includes directive to leverage pythons threading capacity.)
+'''
+if __name__ == '__main__':
+    app.run(threaded=True, port=int(os.environ.get("PORT",
+                                                   os.environ.get("SPOTIPY_REDIRECT_URI", 5000).split(":")[-1])))
