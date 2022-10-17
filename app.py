@@ -58,6 +58,8 @@ def index():
 
     # Step 3. Signed in, display data
     spotify = spotipy.Spotify(auth_manager=auth_manager)
+
+    #effectively determines default page
     return redirect('/currently_playing')
 
 
@@ -87,6 +89,7 @@ def currently_playing():
         return render_template("currently_playing.html", title=title, artist=artist, album=album, art_url=art_url, id=id, currently_playing=currently_playing, liked=liked, json=json.dumps(track, indent=2))
     return render_template("not_playing.html")
 
+#pinged every ~2 sec to see if refresh of page is required
 @app.route('/current_track_xhr')
 def current_track_xhr():
     spotify = getSpotify()
@@ -107,13 +110,13 @@ def current_track_xhr():
     else:
         return "different"
 
+#end of pages, now just assorted methods
 
 def get_artists(artists_json):
     artists = []
     for artist in artists_json:
         artists.append(artist["name"])
     return ", ".join(artists)
-
 
 @app.route('/play')
 def play():
@@ -146,7 +149,6 @@ def unlike():
     id = request.args.get("id")
     spotify.current_user_saved_tracks_delete(tracks=[id])
     return redirect('/currently_playing')
-
 
 def getSpotify():
     cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
