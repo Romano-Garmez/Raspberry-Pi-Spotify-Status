@@ -8,15 +8,15 @@
     </div>
     <div id="right">
         <div id="text-outer">
-        <div id="text">
-            <h1 class="title">{{title}}</h1>
-            <h2 class="artist">{{artist}}</h2>
-            <h2 class="album">{{album}}</h2>
+            <div id="text">
+                <h1 class="title">{{title}}</h1>
+                <h2 class="artist">{{artist}}</h2>
+                <h2 class="album">{{album}}</h2>
+            </div>
         </div>
-    </div>
         <div id="buttons" class="center">
             {% if currently_playing %}
-            
+
             <a href="/pause" class="btn btn-default media-control-button"><i class="material-icons">pause</i></a>
             {% else %}
             <a href="/play" class="btn btn-default media-control-button"><i class="material-icons">play_arrow</i></a>
@@ -25,9 +25,11 @@
             <a href="/skip" class="btn btn-default media-control-button"><i class="material-icons">skip_next</i></a>
 
             {% if liked %}
-            <a href="/unlike?id={{id}}" class="btn btn-default media-control-button"><i class="material-icons">favorite</i></a>
+            <a href="/unlike?id={{id}}" class="btn btn-default media-control-button"><i
+                    class="material-icons">favorite</i></a>
             {% else %}
-            <a href="/like?id={{id}}" class="btn btn-default media-control-button"><i class="material-icons">favorite_border</i></a>
+            <a href="/like?id={{id}}" class="btn btn-default media-control-button"><i
+                    class="material-icons">favorite_border</i></a>
             {% endif %}
         </div>
     </div>
@@ -52,7 +54,7 @@
         var textColorArray = colorThief.getPalette(img);
         document.body.style.backgroundColor = 'rgb(' + backgroundColor[0] + ',' + backgroundColor[1] + ',' + backgroundColor[2] + ')';
         var backgroundColorAvg = avg(backgroundColor);
-        var backgroundIsDark = backgroundColorAvg < 170;
+        var backgroundIsDark = backgroundColorAvg < 120;
         var darkestColor = [255, 255, 255];
         var lightestColor = [0, 0, 0];
         for (let i = 0; i < textColorArray.length; i++) {
@@ -72,8 +74,8 @@
         }
         document.body.style.color = 'rgb(' + textColor[0] + ',' + textColor[1] + ',' + textColor[2] + ')';
         var buttons = document.getElementsByClassName("media-control-button");
-        for (var i = 0; i < buttons.length; i++){
-            buttons[i].style.color= 'rgb(' + textColor[0] + ',' + textColor[1] + ',' + textColor[2] + ')';
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].style.color = 'rgb(' + textColor[0] + ',' + textColor[1] + ',' + textColor[2] + ')';
         }
     }
 
@@ -98,10 +100,16 @@
     }
 
     function compareTrack() {
-        const req = new XMLHttpRequest();
-        req.addEventListener("load", reqListener);
-        req.open("GET", "/current_track_xhr?id={{id}}&currently_playing={{currently_playing}}");
-        req.send();
+        try {
+            const req = new XMLHttpRequest();
+            req.addEventListener("load", reqListener);
+            req.open("GET", "/current_track_xhr?id={{id}}&currently_playing={{currently_playing}}");
+            req.send();
+        } catch (error) {
+            console.log("Unable to reach server");
+        }
+
+
     }
 
     const interval = setInterval(function () {

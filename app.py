@@ -56,20 +56,13 @@ def index():
 
     # Step 3. Signed in, display data
     spotify = spotipy.Spotify(auth_manager=auth_manager)
-    return render_template("index.html", display_name=spotify.me()["display_name"])
+    return redirect('/currently_playing')
 
 
 @app.route('/sign_out')
 def sign_out():
     session.pop("token_info", None)
     return redirect('/')
-
-
-@app.route('/playlists')
-def playlists():
-    spotify = getSpotify()
-    return spotify.current_user_playlists()
-
 
 @app.route('/currently_playing')
 def currently_playing():
@@ -85,13 +78,6 @@ def currently_playing():
         currently_playing = track["is_playing"]
         return render_template("currently_playing.html", title=title, artist=artist, album=album, art_url=art_url, id=id, currently_playing=currently_playing, liked=liked, json=json.dumps(track, indent=2))
     return render_template("not_playing.html")
-
-
-@app.route('/current_user')
-def current_user():
-    spotify = getSpotify()
-    return spotify.current_user()
-
 
 @app.route('/current_track_xhr')
 def current_track_xhr():
