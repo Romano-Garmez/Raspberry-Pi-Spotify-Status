@@ -166,5 +166,5 @@ Following lines allow application to be run more conveniently with
 (Also includes directive to leverage pythons threading capacity.)
 '''
 if __name__ == '__main__':
-    app.run(threaded=True, port=int(os.environ.get("PORT",
-                                                   os.environ.get("SPOTIPY_REDIRECT_URI", 5000).split(":")[-1])))
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=8100)
