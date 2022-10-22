@@ -1,4 +1,6 @@
 """
+CS50 Final Project: Spotify Status - Roman Garms
+
 Prerequisites
 
     pip3 install spotipy Flask Flask-Session
@@ -8,19 +10,10 @@ Prerequisites
     export SPOTIPY_CLIENT_SECRET=client_secret_here
     export SPOTIPY_REDIRECT_URI='http://127.0.0.1:8080' // must contain a port
     // SPOTIPY_REDIRECT_URI must be added to your [app settings](https://developer.spotify.com/dashboard/applications)
-    OPTIONAL
-    // in development environment for debug output
-    export FLASK_ENV=development
-    // so that you can invoke the app outside of the file's directory include
-    export FLASK_APP=/path/to/spotipy/examples/app.py
-
     // on Windows, use `SET` instead of `export`
 
 Run app.py
-
     python3 app.py OR python3 -m flask run
-    NOTE: If receiving "port already in use" error, try other ports: 5000, 8090, 8888, etc...
-        (will need to be updated in your Spotify app and SPOTIPY_REDIRECT_URI variable)
 """
 import os
 from flask import Flask, session, request, redirect, render_template
@@ -56,10 +49,7 @@ def index():
         auth_url = auth_manager.get_authorize_url()
         return render_template("login.html", auth_url=auth_url)
 
-    # Step 3. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-
-    #effectively determines default page
+    # Step 3. Signed in, display currently playing
     return redirect('/currently_playing')
 
 
@@ -110,7 +100,7 @@ def current_track_xhr():
     else:
         return "different"
 
-#end of pages, now just assorted methods
+#end of html pages, now just assorted methods
 
 def get_artists(artists_json):
     artists = []
@@ -163,7 +153,6 @@ def shortenText(string, length):
 '''
 Following lines allow application to be run more conveniently with
 `python app.py` (Make sure you're using python3)
-(Also includes directive to leverage pythons threading capacity.)
 '''
 if __name__ == '__main__':
     from waitress import serve
