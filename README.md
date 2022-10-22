@@ -1,4 +1,4 @@
-# CS50 Final Project: Spotify Status
+# Harvard CS50 Final Project: Spotify Status
 #### Video Demo:  to be added at a later date
 
 #### Description:
