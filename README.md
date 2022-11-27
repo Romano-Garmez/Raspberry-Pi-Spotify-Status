@@ -34,4 +34,3 @@ I will keep this CS50 version as a separate branch before I make any of these ad
 * templates/layout.html: Template page, imports Bootstrap, runs polling code
 * templates/login.html: Sign-in page
 * templates/not_playing.html: Displayed if no song currently playing
-
