@@ -18,3 +18,11 @@ I started my project by setting up a basic site to show raw JSON of my Spotify d
 I compute the color palette using a javascript library called [ColorThief](https://github.com/lokesh/color-thief) which grabs the dominant color for the background, and a contrasting alternate color from the palette for the text. 
 
 I use [Google Material Symbols](https://material.io/blog/introducing-symbols) for the playback control icons. This allows for easy scaling to different screen sizes without needing separate images.
+
+#### Files:
+* app.py: Python code for Flask server. Backend, logs you in, polls Spotify API
+* static/styles.css: Visual customizations, uses Bootstrap
+* templates/currently_playing.html: Main web page, shows album art, song details and playback controls
+* templates/layout.html: Template page, imports Bootstrap, runs polling code
+* templates/login.html: Sign-in page
+* templates/not_playing.html: Displayed if no song currently playing
