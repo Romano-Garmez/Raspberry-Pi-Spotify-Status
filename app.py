@@ -20,6 +20,7 @@ from flask import Flask, session, request, redirect, render_template
 from flask_session import Session
 import spotipy
 import json
+import sys
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)
@@ -155,5 +156,12 @@ Following lines allow application to be run more conveniently with
 `python app.py` (Make sure you're using python3)
 '''
 if __name__ == '__main__':
+    if os.getenv('SPOTIPY_CLIENT_ID') == None:
+        sys.exit("Missing Environment Variable: SPOTIPY_CLIENT_ID")
+    if os.getenv('SPOTIPY_CLIENT_SECRET') == None:
+        sys.exit("Missing Environment Variable: SPOTIPY_CLIENT_SECRET")
+    if os.getenv('SPOTIPY_REDIRECT_URI') == None:
+        sys.exit("Missing Environment Variable: SPOTIPY_REDIRECT_URI")
+    print(os.getenv("SPOTIPY_REDIRECT_URI"))
     from waitress import serve
     serve(app, host="0.0.0.0", port=8100)
