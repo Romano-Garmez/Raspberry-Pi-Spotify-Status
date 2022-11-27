@@ -1,5 +1,5 @@
 # Harvard CS50 Final Project: Spotify Status
-#### Video Demo:  to be added at a later date
+#### Video Demo: https://youtu.be/Yc1qeze1bso
 
 #### Description:
 A web app to display your currently playing song on Spotify. Allows you to skip songs, play/pause, and like/unlike. Analyzes album artwork to choose background and foreground color to match the image. Polls every two seconds to refresh the display to show your currently playing song. Scales to the size of your display using dynamic layout.
