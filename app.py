@@ -22,9 +22,7 @@ import spotipy
 import json
 import sys
 
-NOW_PLAYING_DOMAIN = 'nowplaying.romangarms.com'
-
-app = Flask(__name__, host_matching=True, static_host=NOW_PLAYING_DOMAIN)
+app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_FILE_DIR'] = './.flask_session/'
@@ -34,7 +32,7 @@ maxArtistLength = 35
 maxAlbumLength = 35
 
 
-@app.route('/', host=NOW_PLAYING_DOMAIN)
+@app.route('/')
 def index():
 
     cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
