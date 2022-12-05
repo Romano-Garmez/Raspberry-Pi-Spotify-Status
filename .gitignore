@@ -175,5 +175,4 @@ flask_session/
 .dockerignore
 fly.toml
 Procfile
-requirements.txt
 startServer.sh
