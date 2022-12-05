@@ -170,3 +170,10 @@ cython_debug/
 #Flask Session
 .flask_session/
 flask_session/
+
+#fly.io
+.dockerignore
+fly.toml
+Procfile
+requirements.txt
+startServer.sh
