@@ -3,7 +3,7 @@ CS50 Final Project: Spotify Status - Roman Garms
 
 Prerequisites
 
-    pip3 install spotipy Flask Flask-Session
+    pip3 install spotipy Flask Flask-Session waitress
 
     // from your [app settings](https://developer.spotify.com/dashboard/applications)
     export SPOTIPY_CLIENT_ID=client_id_here
