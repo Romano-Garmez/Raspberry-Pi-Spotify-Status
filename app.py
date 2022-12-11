@@ -38,7 +38,7 @@ def index():
     cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
     auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-read-currently-playing playlist-modify-private user-modify-playback-state user-library-read user-library-modify playlist-modify-private playlist-modify-public',
                                                cache_handler=cache_handler,
-                                               show_dialog=True)
+                                               show_dialog=False)
 
     if request.args.get("code"):
         # Step 2. Being redirected from Spotify auth page
