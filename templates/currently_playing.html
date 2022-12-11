@@ -105,11 +105,15 @@
             location.reload();
         }
     }
+    function reloadPageListener(){
+        location.reload();
+    }
 
     function compareTrack() {
         try {
             const req = new XMLHttpRequest();
             req.addEventListener("load", reqListener);
+            req.addEventListener("error", reloadPageListener)
             req.open("GET", "/current_track_xhr?id={{id}}&currently_playing={{currently_playing}}");
             req.send();
         } catch (error) {
