@@ -21,7 +21,7 @@
     display: table-cell;
     max-width: 100%;
     height: 80%;
-    padding: 10%;
+    padding-left: 5%;
     vertical-align: middle;
     font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
 }
@@ -37,7 +37,7 @@
 #outer {
     width: 100%;
     display: flex;
-    padding: 5%;
+    padding: 2%;
     margin: 0;
     position: absolute;
     top: 50%;
@@ -61,18 +61,18 @@
 
 .title {
     font-weight: 900;
-    font-size: 5vw;
+    font-size: 7.5vw;
 }
 
 .artist {
     font-weight: 400;
-    font-size: 3.5vw;
+    font-size: 4.5vw;
 }
 
 .album {
     font-weight: 400;
     opacity: 0.75;
-    font-size: 3.5vw;
+    font-size: 4.5vw;
 }
 
 .material-icons {
