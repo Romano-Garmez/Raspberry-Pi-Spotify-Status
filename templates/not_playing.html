@@ -7,12 +7,15 @@
 {% block main %}
 wooo nothing is playing rn
 <script>
+    var turnOffRequest = new XMLHttpRequest();
+    turnOffRequest.open("GET", "http://localhost:9000/TurnOffScreen", true); // false for synchronous request
+    turnOffRequest.send(null);
+
     function reqListener() {
         if (this.responseText === "different") {
             location.reload();
         }
     }
-
     function compareTrack() {
         try {
             const req = new XMLHttpRequest();

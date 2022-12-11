@@ -31,6 +31,7 @@
     clear: both;
     width: 100%;
     height: 20%;
+    
 }
 
 #outer {
@@ -52,6 +53,10 @@
     width: 100%;
     height: 80%;
     display: table;
+}
+
+.hide-mouse{
+    cursor: none;
 }
 
 .title {
