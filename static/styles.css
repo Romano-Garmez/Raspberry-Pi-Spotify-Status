@@ -31,6 +31,7 @@
     clear: both;
     width: 100%;
     height: 20%;
+    
 }
 
 #outer {
@@ -42,7 +43,6 @@
     top: 50%;
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
-    cursor: none;
 }
 
 #album-art {
@@ -53,6 +53,10 @@
     width: 100%;
     height: 80%;
     display: table;
+}
+
+.hide-mouse{
+    cursor: none;
 }
 
 .title {
