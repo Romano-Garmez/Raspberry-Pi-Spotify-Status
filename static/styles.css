@@ -55,10 +55,6 @@
     display: table;
 }
 
-.hide-mouse{
-    cursor: none;
-}
-
 .title {
     font-weight: 900;
     font-size: 7.5vw;
