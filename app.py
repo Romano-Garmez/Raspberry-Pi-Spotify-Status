@@ -21,15 +21,16 @@ from flask_session import Session
 import spotipy
 import json
 import sys
+import re
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_FILE_DIR'] = './.flask_session/'
 Session(app)
-maxTitleLength = 35
+maxTitleLength = 25
 maxArtistLength = 35
-maxAlbumLength = 35
+maxAlbumLength = 20
 
 
 @app.route('/')
@@ -59,6 +60,7 @@ def sign_out():
     session.pop("token_info", None)
     return redirect('/')
 
+
 @app.route('/currently_playing')
 def currently_playing():
     spotify = getSpotify()
@@ -67,12 +69,9 @@ def currently_playing():
         title = track["item"]["name"]
         artist = get_artists(track["item"]["artists"])
         album = track["item"]["album"]["name"]
-        if len(title) > maxTitleLength:
-            title = shortenText(title, maxTitleLength)
-        if len(artist) > maxArtistLength:
-            artist = shortenText(artist, maxArtistLength)
-        if len(album) > maxAlbumLength:
-            album = shortenText(album, maxAlbumLength)
+        album = formatAlbum(title, album)
+        artist = formatArtist(artist)
+        title = formatTitle(title)
         art_url = track["item"]["album"]["images"][0]["url"]
         id = track["item"]["id"]
         liked = spotify.current_user_saved_tracks_contains(tracks=[id])[0]
@@ -80,7 +79,9 @@ def currently_playing():
         return render_template("currently_playing.html", title=title, artist=artist, album=album, art_url=art_url, id=id, currently_playing=currently_playing, liked=liked, json=json.dumps(track, indent=2))
     return render_template("not_playing.html")
 
-#pinged every ~2 sec to see if refresh of page is required
+# pinged every ~2 sec to see if refresh of page is required
+
+
 @app.route('/current_track_xhr')
 def current_track_xhr():
     spotify = getSpotify()
@@ -101,7 +102,8 @@ def current_track_xhr():
     else:
         return "different"
 
-#end of html pages, now just assorted methods
+# end of html pages, now just assorted methods
+
 
 def get_artists(artists_json):
     artists = []
@@ -109,11 +111,13 @@ def get_artists(artists_json):
         artists.append(artist["name"])
     return ", ".join(artists)
 
+
 @app.route('/play')
 def play():
     spotify = getSpotify()
     spotify.start_playback()
     return redirect('/currently_playing')
+
 
 @app.route('/pause')
 def pause():
@@ -121,11 +125,13 @@ def pause():
     spotify.pause_playback()
     return redirect('/currently_playing')
 
+
 @app.route('/skip')
 def skip():
     spotify = getSpotify()
     spotify.next_track()
     return redirect('/currently_playing')
+
 
 @app.route('/like')
 def like():
@@ -134,12 +140,14 @@ def like():
     spotify.current_user_saved_tracks_add(tracks=[id])
     return redirect('/currently_playing')
 
+
 @app.route('/unlike')
 def unlike():
     spotify = getSpotify()
     id = request.args.get("id")
     spotify.current_user_saved_tracks_delete(tracks=[id])
     return redirect('/currently_playing')
+
 
 def getSpotify():
     cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
@@ -148,8 +156,30 @@ def getSpotify():
         return redirect('/')
     return spotipy.Spotify(auth_manager=auth_manager)
 
+
 def shortenText(string, length):
     return string[:length] + "..."
+
+
+def formatTitle(title):
+    title = re.sub('\(feat\. .+\)', '', title)
+    if len(title) > maxTitleLength:
+        title = shortenText(title, maxTitleLength)
+    return title
+
+
+def formatArtist(artist):
+    if len(artist) > maxArtistLength:
+        return shortenText(artist, maxArtistLength)
+
+
+def formatAlbum(title, album):
+    if len(album) > maxAlbumLength:
+        if album == title:
+            return ''
+        else:
+            return shortenText(album, maxAlbumLength)
+
 
 '''
 Following lines allow application to be run more conveniently with
