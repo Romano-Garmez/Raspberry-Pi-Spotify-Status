@@ -171,6 +171,7 @@ def formatTitle(title):
 def formatArtist(artist):
     if len(artist) > maxArtistLength:
         return shortenText(artist, maxArtistLength)
+    return artist
 
 
 def formatAlbum(title, album):
@@ -179,6 +180,7 @@ def formatAlbum(title, album):
             return ''
         else:
             return shortenText(album, maxAlbumLength)
+    return album
 
 
 '''
