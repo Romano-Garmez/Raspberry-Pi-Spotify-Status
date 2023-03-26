@@ -5,7 +5,13 @@
 {%endblock%}
 
 {% block main %}
-wooo nothing is playing rn
+<!--wooo nothing is playing rn-->
+<div id="outer">
+    <div id="center">
+        <h1 class="not-playing">Nothing is currently playing.</h1>
+    </div>
+</div>
+
 <script>
     var turnOffRequest = new XMLHttpRequest();
     turnOffRequest.open("GET", "http://localhost:9000/TurnOffScreen", true); // false for synchronous request
