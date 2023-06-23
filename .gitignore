@@ -176,3 +176,4 @@ flask_session/
 fly.toml
 Procfile
 startServer.sh
+.bash_profile
