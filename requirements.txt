@@ -7,3 +7,4 @@ MarkupSafe==2.1.1
 Werkzeug==2.2.2
 spotipy==2.21.0
 Flask-Session==0.4.0
+waitress==3.0.0

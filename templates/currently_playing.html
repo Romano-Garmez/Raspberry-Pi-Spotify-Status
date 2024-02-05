@@ -18,6 +18,14 @@
             </div>
         </div>
         <div id="buttons" class="center">
+            {% if liked %}
+            <a href="/unlike?id={{id}}" class="btn btn-default media-control-button hide-mouse"><i
+                    class="material-icons hide-mouse">favorite</i></a>
+            {% else %}
+            <a href="/like?id={{id}}" class="btn btn-default media-control-button hide-mouse"><i
+                    class="material-icons hide-mouse">favorite_border</i></a>
+            {% endif %}
+
             {% if currently_playing %}
             <script>
                 var turnOnRequest = new XMLHttpRequest();
@@ -35,14 +43,6 @@
             {% endif %}
 
             <a href="/skip" class="btn btn-default media-control-button hide-mouse"><i class="material-icons hide-mouse">skip_next</i></a>
-
-            {% if liked %}
-            <a href="/unlike?id={{id}}" class="btn btn-default media-control-button hide-mouse"><i
-                    class="material-icons hide-mouse">favorite</i></a>
-            {% else %}
-            <a href="/like?id={{id}}" class="btn btn-default media-control-button hide-mouse"><i
-                    class="material-icons hide-mouse">favorite_border</i></a>
-            {% endif %}
         </div>
     </div>
 </div>
