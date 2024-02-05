@@ -3,18 +3,23 @@ CS50 Final Project: Spotify Status - Roman Garms
 
 Prerequisites
 
-    pip3 install spotipy Flask Flask-Session waitress
+    Install prereqs from requirements.txt
 
     // from your [app settings](https://developer.spotify.com/dashboard/applications)
+
     export SPOTIPY_CLIENT_ID=client_id_here
     export SPOTIPY_CLIENT_SECRET=client_secret_here
-    export SPOTIPY_REDIRECT_URI='http://127.0.0.1:8080' // must contain a port
+    export SPOTIPY_REDIRECT_URI='http://127.0.0.1:5000' // must contain a port
+
+    // set the redirect url to 'http://127.0.0.1:5000' for testing on your local machine. When hosting, you will need to change that to the address of the device you are hosting on. 
     // SPOTIPY_REDIRECT_URI must be added to your [app settings](https://developer.spotify.com/dashboard/applications)
     // on Windows, use `SET` instead of `export`
 
 Run app.py
     python3 app.py OR python3 -m flask run
+    Alternatively, run using the launch.json under .vscode/ with the VSCode debugger
 """
+
 import os
 from flask import Flask, session, request, redirect, render_template
 from flask_session import Session
@@ -198,7 +203,7 @@ def formatAlbum(title, album):
 
 """
 Following lines allow application to be run more conveniently with
-`python app.py` (Make sure you're using python3)
+`python3 app.py` (Make sure you're using python3)
 """
 if __name__ == "__main__":
     if os.getenv("SPOTIPY_CLIENT_ID") == None:

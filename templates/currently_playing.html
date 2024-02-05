@@ -18,14 +18,6 @@
             </div>
         </div>
         <div id="buttons" class="center">
-            {% if currently_playing %}
-            <a href="/pause" class="btn btn-default media-control-button"><i class="material-icons">pause</i></a>
-            {% else %}
-            <a href="/play" class="btn btn-default media-control-button"><i class="material-icons">play_arrow</i></a>
-            {% endif %}
-
-            <a href="/skip" class="btn btn-default media-control-button"><i class="material-icons">skip_next</i></a>
-
             {% if liked %}
             <a href="/unlike?id={{id}}" class="btn btn-default media-control-button"><i
                     class="material-icons">favorite</i></a>
@@ -33,6 +25,14 @@
             <a href="/like?id={{id}}" class="btn btn-default media-control-button"><i
                     class="material-icons">favorite_border</i></a>
             {% endif %}
+
+            {% if currently_playing %}
+            <a href="/pause" class="btn btn-default media-control-button"><i class="material-icons">pause</i></a>
+            {% else %}
+            <a href="/play" class="btn btn-default media-control-button"><i class="material-icons">play_arrow</i></a>
+            {% endif %}
+
+            <a href="/skip" class="btn btn-default media-control-button"><i class="material-icons">skip_next</i></a>
         </div>
     </div>
 </div>
