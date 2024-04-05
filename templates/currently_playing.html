@@ -45,32 +45,35 @@
 <script>
     const colorThief = new ColorThief();
     const img = document.querySelector('img');
+
     function avg(color) {
         return (color[0] + color[1] + color[2]) / 3;
     }
+
     function setColors() {
         var backgroundColor = colorThief.getColor(img);
         var textColorArray = colorThief.getPalette(img);
+
+        //for debugging
+        //console.log(backgroundColor);
+        //console.log(textColorArray);
+
+        //set background color
         document.body.style.backgroundColor = 'rgb(' + backgroundColor[0] + ',' + backgroundColor[1] + ',' + backgroundColor[2] + ')';
         var backgroundColorAvg = avg(backgroundColor);
-        var backgroundIsDark = backgroundColorAvg < 120;
-        var darkestColor = [255, 255, 255];
-        var lightestColor = [0, 0, 0];
+
+        //find the color that contrasts the most with the background color and use it for text
+        var mostContrastingColor = textColorArray[0];
         for (let i = 0; i < textColorArray.length; i++) {
             var textColorAvg = avg(textColorArray[i]);
-            if (textColorAvg > (avg(lightestColor))) {
-                lightestColor = textColorArray[i];
+
+            if (Math.abs(avg(textColorArray[i]) - backgroundColorAvg) > Math.abs(avg(mostContrastingColor) - backgroundColorAvg)) {
+                mostContrastingColor = textColorArray[i];
             }
-            if (textColorAvg < (avg(darkestColor))) {
-                darkestColor = textColorArray[i];
-            }
+
         }
-        var textColor = null;
-        if (backgroundIsDark) {
-            textColor = lightestColor;
-        } else {
-            textColor = darkestColor;
-        }
+        var textColor = mostContrastingColor;
+
         document.body.style.color = 'rgb(' + textColor[0] + ',' + textColor[1] + ',' + textColor[2] + ')';
         var buttons = document.getElementsByClassName("media-control-button");
         for (var i = 0; i < buttons.length; i++) {
@@ -95,7 +98,7 @@
             location.reload();
         }
     }
-    function reloadPageListener(){
+    function reloadPageListener() {
         location.reload();
     }
 
