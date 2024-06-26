@@ -180,7 +180,7 @@ def shortenText(string, length):
 
 
 def formatTitle(title):
-    title = re.sub("\\(feat\\. .+\\)", "", title)
+    title = re.sub("\(feat\. .+\)", "", title)
     if len(title) > maxTitleLength:
         title = shortenText(title, maxTitleLength)
     return title
