@@ -42,7 +42,7 @@ maxAlbumLength = 20
 def index():
     cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
     auth_manager = spotipy.oauth2.SpotifyOAuth(
-        scope="user-read-currently-playing playlist-modify-private user-modify-playback-state user-library-read user-library-modify playlist-modify-private playlist-modify-public",
+        scope="user-read-playback-state user-read-currently-playing playlist-modify-private user-modify-playback-state user-library-read user-library-modify playlist-modify-private playlist-modify-public",
         cache_handler=cache_handler,
         show_dialog=False,
     )
@@ -119,7 +119,11 @@ def current_track_xhr():
     else:
         return "different"
 
-
+@app.route("/data")
+def data():
+    spotify = getSpotify()
+    data = spotify.devices()
+    return data
 # end of html pages, now just assorted methods
 
 
