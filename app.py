@@ -95,6 +95,13 @@ def currently_playing():
         )
     return render_template("not_playing.html")
 
+# debugging
+@app.route("/debug")
+def debug():
+    spotify = getSpotify()
+    track = spotify.current_user_playing_track()
+    return track["item"]
+
 
 # pinged every ~2 sec to see if refresh of page is required
 
