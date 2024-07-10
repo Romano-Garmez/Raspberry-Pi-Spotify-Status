@@ -104,8 +104,6 @@ def debug():
 
 
 # pinged every ~2 sec to see if refresh of page is required
-
-
 @app.route("/current_track_xhr")
 def current_track_xhr():
     spotify = getSpotify()
