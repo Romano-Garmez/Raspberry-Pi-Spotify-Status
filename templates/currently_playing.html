@@ -36,6 +36,9 @@
         </div>
     </div>
 </div>
+<div id="progress-bar">
+    <div id="progress-bar-inner"></div>
+</div>
 <p></p>
 <pre>
 
@@ -98,24 +101,40 @@
             location.reload();
         }
     }
+    function inforeqListener() {
+        parsed = JSON.parse(this.responseText)
+        console.log(parsed)
+        var duration = parsed["duration"]
+        var progress = parsed["progress"]
+        console.log(duration)
+        console.log(progress)
+        console.log("attempting to set width to " + progress/duration*100 + "%")
+        document.getElementById('progress-bar-inner').style.width=progress/duration*100 + "%";
+    }
     function reloadPageListener() {
         location.reload();
     }
 
-    function compareTrack() {
+    function getTrackInfo() {
         try {
             const req = new XMLHttpRequest();
             req.addEventListener("load", reqListener);
             req.addEventListener("error", reloadPageListener)
             req.open("GET", "/current_track_xhr?id={{id}}&currently_playing={{currently_playing}}");
             req.send();
+
+            const inforeq = new XMLHttpRequest();
+            inforeq.addEventListener("load", inforeqListener);
+            inforeq.addEventListener("error", reloadPageListener)
+            inforeq.open("GET", "/playback_info");
+            inforeq.send();
         } catch (error) {
             console.log("Unable to reach server");
         }
     }
 
     const interval = setInterval(function () {
-        compareTrack()
+        getTrackInfo()
     }, 2000);
 </script>
 {% endblock %}
