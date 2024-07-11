@@ -100,11 +100,13 @@
 </script>
 
 <script>
+    // Check if the track has changed
     function reqListener() {
         if (this.responseText === "different") {
             location.reload();
         }
     }
+    // Update the progress bar
     function inforeqListener() {
         parsed = JSON.parse(this.responseText)
         console.log(parsed)
@@ -115,10 +117,12 @@
         console.log("attempting to set width to " + progress/duration*100 + "%")
         document.getElementById('progress-bar-inner').style.width=progress/duration*100 + "%";
     }
+    // Reload the page if the request fails
     function reloadPageListener() {
         location.reload();
     }
 
+    // send requests to get the track info and playback info
     function getTrackInfo() {
         try {
             const req = new XMLHttpRequest();
@@ -137,6 +141,7 @@
         }
     }
 
+    // Update the track info every 2 seconds
     const interval = setInterval(function () {
         getTrackInfo()
     }, 2000);
