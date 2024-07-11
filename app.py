@@ -120,6 +120,8 @@ def current_track_xhr():
             same_track = "same"
         else:
             same_track = "different"
+        duration = track["item"]["duration_ms"]
+        progress = track["progress_ms"]
     else:
         new_currently_playing = False
         currently_playing = request.args.get("currently_playing") == "True"
@@ -127,9 +129,9 @@ def current_track_xhr():
             same_track = "same"
         else:
             same_track = "different"
+        duration = 0
+        progress = 0
     
-    duration = track["item"]["duration_ms"]
-    progress = track["progress_ms"]
     returnArray = {"duration": duration, "progress": progress, "same_track": same_track}
 
     return returnArray

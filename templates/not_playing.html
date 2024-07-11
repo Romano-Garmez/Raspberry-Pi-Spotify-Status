@@ -18,7 +18,10 @@
     turnOffRequest.send(null);
 
     function reqListener() {
-        if (this.responseText === "different") {
+        parsed = JSON.parse(this.responseText)
+        console.log(parsed)
+
+        if (parsed["same_track"] === "different") {
             location.reload();
         }
     }
