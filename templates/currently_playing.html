@@ -49,6 +49,9 @@
         </div>
     </div>
 </div>
+<div id="progress-bar">
+    <div id="progress-bar-inner"></div>
+</div>
 <p></p>
 <pre>
 
@@ -92,6 +95,10 @@
         for (var i = 0; i < buttons.length; i++) {
             buttons[i].style.color = 'rgb(' + textColor[0] + ',' + textColor[1] + ',' + textColor[2] + ')';
         }
+
+        document.getElementById('progress-bar-inner').style.backgroundColor = 'rgb(' + textColor[0] + ',' + textColor[1] + ',' + textColor[2] + ')';
+        document.getElementById('progress-bar').style.backgroundColor = 'rgb(' + backgroundColor[0] + ',' + backgroundColor[1] + ',' + backgroundColor[2] + ')';
+
     }
 
     // Make sure image is finished loading
@@ -106,29 +113,50 @@
 </script>
 
 <script>
+    // Check if the track has changed
     function reqListener() {
         if (this.responseText === "different") {
             location.reload();
         }
     }
+    // Update the progress bar
+    function inforeqListener() {
+        parsed = JSON.parse(this.responseText)
+        console.log(parsed)
+        var duration = parsed["duration"]
+        var progress = parsed["progress"]
+        console.log(duration)
+        console.log(progress)
+        console.log("attempting to set width to " + progress/duration*100 + "%")
+        document.getElementById('progress-bar-inner').style.width=progress/duration*100 + "%";
+    }
+    // Reload the page if the request fails
     function reloadPageListener() {
         location.reload();
     }
 
-    function compareTrack() {
+    // send requests to get the track info and playback info
+    function getTrackInfo() {
         try {
             const req = new XMLHttpRequest();
             req.addEventListener("load", reqListener);
             req.addEventListener("error", reloadPageListener)
             req.open("GET", "/current_track_xhr?id={{id}}&currently_playing={{currently_playing}}");
             req.send();
+
+            const inforeq = new XMLHttpRequest();
+            inforeq.addEventListener("load", inforeqListener);
+            inforeq.addEventListener("error", reloadPageListener)
+            inforeq.open("GET", "/playback_info");
+            inforeq.send();
         } catch (error) {
             console.log("Unable to reach server");
         }
     }
 
+    // Update the track info every 2 seconds
     const interval = setInterval(function () {
-        compareTrack()
+        getTrackInfo()
     }, 2000);
 </script>
 {% endblock %}

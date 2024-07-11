@@ -95,10 +95,18 @@ def currently_playing():
         )
     return render_template("not_playing.html")
 
+# debugging
+@app.route("/debug")
+def debug():
+    spotify = getSpotify()
+    track = spotify.current_user_playing_track()
+    duration = track["item"]["duration_ms"]
+    progress = track["progress_ms"]
+
+    return "duration is " + str(duration) + " and progress is " + str(progress)
+
 
 # pinged every ~2 sec to see if refresh of page is required
-
-
 @app.route("/current_track_xhr")
 def current_track_xhr():
     spotify = getSpotify()
@@ -119,6 +127,15 @@ def current_track_xhr():
     else:
         return "different"
 
+@app.route("/playback_info")
+def playback_info():
+    spotify = getSpotify()
+    track = spotify.current_user_playing_track()
+    duration = track["item"]["duration_ms"]
+    progress = track["progress_ms"]
+    returnArray = {"duration": duration, "progress": progress}
+
+    return returnArray
 
 # end of html pages, now just assorted methods
 
