@@ -115,23 +115,26 @@
 <script>
     // Check if the track has changed
     function reqListener() {
-        if (this.responseText === "different") {
-            location.reload();
-        }
-    }
-    // Update the progress bar
-    function inforeqListener() {
         parsed = JSON.parse(this.responseText)
         console.log(parsed)
+
+        console.log(parsed["same_track"])
+
         var duration = parsed["duration"]
         var progress = parsed["progress"]
-        console.log(duration)
-        console.log(progress)
-        console.log("attempting to set width to " + progress/duration*100 + "%")
-        document.getElementById('progress-bar-inner').style.width=progress/duration*100 + "%";
+
+        if (parsed["same_track"] === "different") {
+            document.getElementById('progress-bar-inner').style.transition="0ms";
+            location.reload();
+        }
+
+        console.log("attempting to set width to " + progress/duration*101 + "%")
+        document.getElementById('progress-bar-inner').style.width=progress/duration*101 + "%";
     }
+
     // Reload the page if the request fails
     function reloadPageListener() {
+        document.getElementById('progress-bar-inner').style.transition="0ms";
         location.reload();
     }
 
@@ -144,11 +147,6 @@
             req.open("GET", "/current_track_xhr?id={{id}}&currently_playing={{currently_playing}}");
             req.send();
 
-            const inforeq = new XMLHttpRequest();
-            inforeq.addEventListener("load", inforeqListener);
-            inforeq.addEventListener("error", reloadPageListener)
-            inforeq.open("GET", "/playback_info");
-            inforeq.send();
         } catch (error) {
             console.log("Unable to reach server");
         }

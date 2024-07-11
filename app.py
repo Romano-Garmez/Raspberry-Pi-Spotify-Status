@@ -117,23 +117,20 @@ def current_track_xhr():
         new_currently_playing = track["is_playing"]
         currently_playing = request.args.get("currently_playing") == "True"
         if id == new_id and currently_playing == new_currently_playing:
-            return "same"
+            same_track = "same"
         else:
-            return "different"
-    new_currently_playing = False
-    currently_playing = request.args.get("currently_playing") == "True"
-    if currently_playing == new_currently_playing:
-        return "same"
+            same_track = "different"
     else:
-        return "different"
-
-@app.route("/playback_info")
-def playback_info():
-    spotify = getSpotify()
-    track = spotify.current_user_playing_track()
+        new_currently_playing = False
+        currently_playing = request.args.get("currently_playing") == "True"
+        if currently_playing == new_currently_playing:
+            same_track = "same"
+        else:
+            same_track = "different"
+    
     duration = track["item"]["duration_ms"]
     progress = track["progress_ms"]
-    returnArray = {"duration": duration, "progress": progress}
+    returnArray = {"duration": duration, "progress": progress, "same_track": same_track}
 
     return returnArray
 
