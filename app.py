@@ -111,28 +111,36 @@ def debug():
 def current_track_xhr():
     spotify = getSpotify()
     track = spotify.current_user_playing_track()
+    currently_playing = False
+    liked = False
     if not track is None:
         new_id = track["item"]["id"]
         id = request.args.get("id")
-        new_currently_playing = track["is_playing"]
+        spotapi_currently_playing = track["is_playing"]
         currently_playing = request.args.get("currently_playing") == "True"
-        if id == new_id and currently_playing == new_currently_playing:
+        if id == new_id and currently_playing == spotapi_currently_playing:
             same_track = "same"
         else:
             same_track = "different"
         duration = track["item"]["duration_ms"]
         progress = track["progress_ms"]
+
+        liked = spotify.current_user_saved_tracks_contains(tracks=[id])[0]
     else:
-        new_currently_playing = False
+        spotapi_currently_playing = False
         currently_playing = request.args.get("currently_playing") == "True"
-        if currently_playing == new_currently_playing:
+        if currently_playing == spotapi_currently_playing:
             same_track = "same"
         else:
             same_track = "different"
         duration = 0
         progress = 0
     
-    returnArray = {"duration": duration, "progress": progress, "same_track": same_track}
+    # getting more info to pass through to page
+    
+    
+
+    returnArray = {"duration": duration, "progress": progress, "same_track": same_track, "currently_playing": currently_playing, "liked": liked}
 
     return returnArray
 
