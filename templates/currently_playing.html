@@ -27,47 +27,14 @@
             {% endif %}
 
             {% if currently_playing %}
-
-           <script>
-                var turnOnRequest = new XMLHttpRequest();
-                turnOnRequest.open("GET", "http://localhost:9000/TurnOnScreen", true); // false for synchronous request
-                turnOnRequest.send(null);
-            </script>
-      
             <a onclick="pause()" id="play-pause-button" class="btn btn-default media-control-button"><i
                     class="material-icons">pause</i></a>
             {% else %}
-            <script>
-                var turnOffRequest = new XMLHttpRequest();
-                turnOffRequest.open("GET", "http://localhost:9000/TurnOffScreen", true); // false for synchronous request
-                turnOffRequest.send(null);
-            </script>
             <a onclick="play()" id="play-pause-button" class="btn btn-default media-control-button"><i
                     class="material-icons">play_arrow</i></a>
             {% endif %}
 
             <a onclick="skip()" class="btn btn-default media-control-button"><i class="material-icons">skip_next</i></a>
-
-            <script>
-                var turnOnRequest = new XMLHttpRequest();
-                turnOnRequest.open("GET", "http://localhost:9000/TurnOnScreen", true); // false for synchronous request
-                turnOnRequest.send(null);
-            </script>
-            <a href="/pause" class="btn btn-default media-control-button"><i
-                    class="material-icons">pause</i></a>
-            {% else %}
-            <script>
-                var turnOffRequest = new XMLHttpRequest();
-                turnOffRequest.open("GET", "http://localhost:9000/TurnOffScreen", true); // false for synchronous request
-                turnOffRequest.send(null);
-            </script>
-            <a href="/play" class="btn btn-default media-control-button"><i
-                    class="material-icons">play_arrow</i></a>
-            {% endif %}
-
-            <a href="/skip" class="btn btn-default media-control-button"><i
-                    class="material-icons">skip_next</i></a>
-
         </div>
     </div>
 </div>
