@@ -43,8 +43,11 @@
 </div>
 
 <script>
+    var ignoreAutoRefresh = false;
+
     function play() {
         console.log("trying to play")
+        ignoreAutoRefresh = true;
         try {
             const req = new XMLHttpRequest();
             req.open("GET", "/play");
@@ -61,6 +64,7 @@
 
     function pause() {
         console.log("trying to pause")
+        ignoreAutoRefresh = true;
         try {
             const req = new XMLHttpRequest();
             req.open("GET", "/pause");
@@ -86,6 +90,7 @@
 
     function like() {
         console.log("liking id: {{id}}")
+        ignoreAutoRefresh = true;
         try {
             const req = new XMLHttpRequest();
             req.open("GET", "/like?id={{id}}");
@@ -102,6 +107,7 @@
 
     function unlike() {
         console.log("unliking id: {{id}}")
+        ignoreAutoRefresh = true;
         try {
             const req = new XMLHttpRequest();
             req.open("GET", "/unlike?id={{id}}");
@@ -175,41 +181,44 @@
 <script>
     // Check if the track has changed
     function reqListener() {
-        parsed = JSON.parse(this.responseText)
-        console.log(parsed)
+        if (ignoreAutoRefresh == false) {
+            parsed = JSON.parse(this.responseText)
+            console.log(parsed)
 
-        var duration = parsed["duration"]
-        var progress = parsed["progress"]
+            var duration = parsed["duration"]
+            var progress = parsed["progress"]
 
-        if (parsed["same_track"] === "different") {
-            location.reload();
+            if (parsed["same_track"] === "different") {
+                location.reload();
 
-            document.getElementById('progress-bar-inner').style.transition = "0ms";
-        }
+                document.getElementById('progress-bar-inner').style.transition = "0ms";
+            }
 
-        document.getElementById('progress-bar-inner').style.width = progress / duration * 101 + "%";
+            document.getElementById('progress-bar-inner').style.width = progress / duration * 101 + "%";
 
-        var playIconElement = document.querySelector('#play-pause-button .material-icons');
+            var playIconElement = document.querySelector('#play-pause-button .material-icons');
 
-        if (parsed["currently_playing"]) {
-            playIconElement.textContent = "pause";
-            document.getElementById('play-pause-button').onclick = pause;
+            if (parsed["currently_playing"]) {
+                playIconElement.textContent = "pause";
+                document.getElementById('play-pause-button').onclick = pause;
+            } else {
+                playIconElement.textContent = "play_arrow";
+                document.getElementById('play-pause-button').onclick = play;
+            }
+
+            var heartIconElement = document.querySelector('#heart-button .material-icons');
+            if (parsed["liked"]) {
+
+                heartIconElement.textContent = "favorite";
+                document.getElementById('heart-button').onclick = unlike;
+            } else {
+                heartIconElement.textContent = "favorite_border";
+                document.getElementById('heart-button').onclick = like;
+            }
+
         } else {
-            playIconElement.textContent = "play_arrow";
-            document.getElementById('play-pause-button').onclick = play;
+            console.log("ignoring auto refresh")
         }
-
-        var heartIconElement = document.querySelector('#heart-button .material-icons');
-        if (parsed["liked"]) {
-            
-            heartIconElement.textContent = "favorite";
-            document.getElementById('heart-button').onclick = unlike;
-        } else {
-            heartIconElement.textContent = "favorite_border";
-            document.getElementById('heart-button').onclick = like;
-        }
-
-
     }
 
     // Reload the page if the request fails
@@ -219,6 +228,7 @@
 
     // send requests to get the track info and playback info
     function getTrackInfo() {
+        ignoreAutoRefresh = false;
         try {
             const req = new XMLHttpRequest();
             req.addEventListener("load", reqListener);
