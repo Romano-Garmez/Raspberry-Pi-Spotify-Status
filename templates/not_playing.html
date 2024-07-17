@@ -21,7 +21,7 @@
         parsed = JSON.parse(this.responseText)
         console.log(parsed)
 
-        if (parsed["same_track"] === "different") {
+        if (parsed["same_track"] === false) {
             location.reload();
         }
     }
