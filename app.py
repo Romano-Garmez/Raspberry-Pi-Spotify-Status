@@ -118,9 +118,9 @@ def current_track_xhr():
         spotapi_currently_playing = track["is_playing"]
         currently_playing = request.args.get("currently_playing") == "True"
         if id == new_id:
-            same_track = "same"
+            same_track = True
         else:
-            same_track = "different"
+            same_track = False
         duration = track["item"]["duration_ms"]
         progress = track["progress_ms"]
 
@@ -133,9 +133,9 @@ def current_track_xhr():
         spotapi_currently_playing = False
         currently_playing = request.args.get("currently_playing") == "True"
         if currently_playing == spotapi_currently_playing:
-            same_track = "same"
+            same_track = True
         else:
-            same_track = "different"
+            same_track = False
         duration = 0
         progress = 0
         liked = False
@@ -144,7 +144,7 @@ def current_track_xhr():
     
     currently_playing = spotapi_currently_playing
 
-    returnArray = {"duration": duration, "progress": progress, "same_track": same_track, "currently_playing": currently_playing, "liked": liked}
+    returnArray = {"progress": progress, "duration": duration, "same_track": same_track, "currently_playing": currently_playing, "liked": liked}
 
     return returnArray
 

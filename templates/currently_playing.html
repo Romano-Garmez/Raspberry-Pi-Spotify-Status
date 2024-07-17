@@ -43,19 +43,22 @@
 </div>
 
 <script>
+    //if the user clicks a button on screen, skip the next auto refresh
     var ignoreAutoRefresh = false;
 
     function play() {
-        console.log("trying to play")
         ignoreAutoRefresh = true;
+
         try {
             const req = new XMLHttpRequest();
             req.open("GET", "/play");
             req.send();
 
+            //change icon to alternate
             var iconElement = document.querySelector('#play-pause-button .material-icons');
             iconElement.textContent = "pause";
 
+            //change onclick function to alternate
             document.getElementById('play-pause-button').onclick = pause;
         } catch (error) {
             console.log("Unable to reach server");
@@ -63,8 +66,8 @@
     }
 
     function pause() {
-        console.log("trying to pause")
         ignoreAutoRefresh = true;
+
         try {
             const req = new XMLHttpRequest();
             req.open("GET", "/pause");
@@ -89,8 +92,8 @@
     }
 
     function like() {
-        console.log("liking id: {{id}}")
         ignoreAutoRefresh = true;
+
         try {
             const req = new XMLHttpRequest();
             req.open("GET", "/like?id={{id}}");
@@ -106,8 +109,8 @@
     }
 
     function unlike() {
-        console.log("unliking id: {{id}}")
         ignoreAutoRefresh = true;
+
         try {
             const req = new XMLHttpRequest();
             req.open("GET", "/unlike?id={{id}}");
@@ -179,7 +182,9 @@
 </script>
 
 <script>
-    // Check if the track has changed
+    /**
+     * This function is called every 2 seconds to get the track info and playback info
+     */
     function reqListener() {
         if (ignoreAutoRefresh == false) {
             parsed = JSON.parse(this.responseText)
@@ -188,9 +193,10 @@
             var duration = parsed["duration"]
             var progress = parsed["progress"]
 
-            if (parsed["same_track"] === "different") {
+            if (parsed["same_track"] == false) {
                 location.reload();
 
+                //prevent progress bar smoothly adjusting back to 0
                 document.getElementById('progress-bar-inner').style.transition = "0ms";
             }
 
@@ -198,6 +204,7 @@
 
             var playIconElement = document.querySelector('#play-pause-button .material-icons');
 
+            // Update the play/pause button based on auto refresh
             if (parsed["currently_playing"]) {
                 playIconElement.textContent = "pause";
                 document.getElementById('play-pause-button').onclick = pause;
@@ -206,9 +213,9 @@
                 document.getElementById('play-pause-button').onclick = play;
             }
 
+            // Update the like button based on auto refresh
             var heartIconElement = document.querySelector('#heart-button .material-icons');
             if (parsed["liked"]) {
-
                 heartIconElement.textContent = "favorite";
                 document.getElementById('heart-button').onclick = unlike;
             } else {
