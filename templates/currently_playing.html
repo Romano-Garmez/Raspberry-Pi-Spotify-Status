@@ -19,31 +19,113 @@
         </div>
         <div id="buttons" class="center">
             {% if liked %}
-            <a href="/unlike?id={{id}}" class="btn btn-default media-control-button"><i
+            <a onclick="unlike()" id="heart-button" class="btn btn-default media-control-button"><i
                     class="material-icons">favorite</i></a>
             {% else %}
-            <a href="/like?id={{id}}" class="btn btn-default media-control-button"><i
+            <a onclick="like()" id="heart-button" class="btn btn-default media-control-button"><i
                     class="material-icons">favorite_border</i></a>
             {% endif %}
 
             {% if currently_playing %}
-            <a href="/pause" class="btn btn-default media-control-button"><i class="material-icons">pause</i></a>
+            <a onclick="pause()" id="play-pause-button" class="btn btn-default media-control-button"><i
+                    class="material-icons">pause</i></a>
             {% else %}
-            <a href="/play" class="btn btn-default media-control-button"><i class="material-icons">play_arrow</i></a>
+            <a onclick="play()" id="play-pause-button" class="btn btn-default media-control-button"><i
+                    class="material-icons">play_arrow</i></a>
             {% endif %}
 
-            <a href="/skip" class="btn btn-default media-control-button"><i class="material-icons">skip_next</i></a>
+            <a onclick="skip()" class="btn btn-default media-control-button"><i class="material-icons">skip_next</i></a>
         </div>
     </div>
 </div>
 <div id="progress-bar">
     <div id="progress-bar-inner"></div>
 </div>
-<p></p>
-<pre>
 
-</pre>
+<script>
+    //if the user clicks a button on screen, skip the next auto refresh
+    var ignoreAutoRefresh = false;
 
+    function play() {
+        ignoreAutoRefresh = true;
+
+        try {
+            const req = new XMLHttpRequest();
+            req.open("GET", "/play");
+            req.send();
+
+            //change icon to alternate
+            var iconElement = document.querySelector('#play-pause-button .material-icons');
+            iconElement.textContent = "pause";
+
+            //change onclick function to alternate
+            document.getElementById('play-pause-button').onclick = pause;
+        } catch (error) {
+            console.log("Unable to reach server");
+        }
+    }
+
+    function pause() {
+        ignoreAutoRefresh = true;
+
+        try {
+            const req = new XMLHttpRequest();
+            req.open("GET", "/pause");
+            req.send();
+            var iconElement = document.querySelector('#play-pause-button .material-icons');
+            iconElement.textContent = "play_arrow";
+
+            document.getElementById('play-pause-button').onclick = play;
+        } catch (error) {
+            console.log("Unable to reach server");
+        }
+    }
+
+    function skip() {
+        try {
+            const req = new XMLHttpRequest();
+            req.open("GET", "/skip");
+            req.send();
+        } catch (error) {
+            console.log("Unable to reach server");
+        }
+    }
+
+    function like() {
+        ignoreAutoRefresh = true;
+
+        try {
+            const req = new XMLHttpRequest();
+            req.open("GET", "/like?id={{id}}");
+            req.send();
+
+            var iconElement = document.querySelector('#heart-button .material-icons');
+            iconElement.textContent = "favorite";
+
+            document.getElementById('heart-button').onclick = unlike;
+        } catch (error) {
+            console.log("Unable to reach server");
+        }
+    }
+
+    function unlike() {
+        ignoreAutoRefresh = true;
+
+        try {
+            const req = new XMLHttpRequest();
+            req.open("GET", "/unlike?id={{id}}");
+            req.send();
+
+            var iconElement = document.querySelector('#heart-button .material-icons');
+            iconElement.textContent = "favorite_border";
+
+            document.getElementById('heart-button').onclick = like;
+        } catch (error) {
+            console.log("Unable to reach server");
+        }
+    }
+
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
 <script>
     const colorThief = new ColorThief();
@@ -100,22 +182,50 @@
 </script>
 
 <script>
-    // Check if the track has changed
+    /**
+     * This function is called every 2 seconds to get the track info and playback info
+     */
     function reqListener() {
-        parsed = JSON.parse(this.responseText)
-        console.log(parsed)
+        if (ignoreAutoRefresh == false) {
+            parsed = JSON.parse(this.responseText)
+            console.log(parsed)
 
-        var duration = parsed["duration"]
-        var progress = parsed["progress"]
+            var duration = parsed["duration"]
+            var progress = parsed["progress"]
 
-        if (parsed["same_track"] === "different") {
-            location.reload();
+            if (parsed["same_track"] == false) {
+                location.reload();
 
-            document.getElementById('progress-bar-inner').style.transition = "0ms";
+                //prevent progress bar smoothly adjusting back to 0
+                document.getElementById('progress-bar-inner').style.transition = "0ms";
+            }
+
+            document.getElementById('progress-bar-inner').style.width = progress / duration * 101 + "%";
+
+            var playIconElement = document.querySelector('#play-pause-button .material-icons');
+
+            // Update the play/pause button based on auto refresh
+            if (parsed["currently_playing"]) {
+                playIconElement.textContent = "pause";
+                document.getElementById('play-pause-button').onclick = pause;
+            } else {
+                playIconElement.textContent = "play_arrow";
+                document.getElementById('play-pause-button').onclick = play;
+            }
+
+            // Update the like button based on auto refresh
+            var heartIconElement = document.querySelector('#heart-button .material-icons');
+            if (parsed["liked"]) {
+                heartIconElement.textContent = "favorite";
+                document.getElementById('heart-button').onclick = unlike;
+            } else {
+                heartIconElement.textContent = "favorite_border";
+                document.getElementById('heart-button').onclick = like;
+            }
+
+        } else {
+            console.log("ignoring auto refresh")
         }
-
-        document.getElementById('progress-bar-inner').style.width = progress / duration * 101 + "%";
-
     }
 
     // Reload the page if the request fails
@@ -125,11 +235,22 @@
 
     // send requests to get the track info and playback info
     function getTrackInfo() {
+        ignoreAutoRefresh = false;
         try {
             const req = new XMLHttpRequest();
             req.addEventListener("load", reqListener);
             req.addEventListener("error", reloadPageListener)
-            req.open("GET", "/current_track_xhr?id={{id}}&currently_playing={{currently_playing}}");
+
+            var iconElement = document.querySelector('#play-pause-button .material-icons');
+
+
+            if (iconElement.textContent === "pause") {
+                currently_playing = true;
+            } else {
+                currently_playing = false;
+            }
+
+            req.open("GET", "/current_track_xhr?id={{id}}&currently_playing=" + currently_playing);
             req.send();
 
         } catch (error) {
