@@ -111,21 +111,24 @@ def debug():
 def current_track_xhr():
     spotify = getSpotify()
     track = spotify.current_user_playing_track()
-    currently_playing = False
-    liked = False
+
     if not track is None:
         new_id = track["item"]["id"]
         id = request.args.get("id")
         spotapi_currently_playing = track["is_playing"]
         currently_playing = request.args.get("currently_playing") == "True"
-        if id == new_id and currently_playing == spotapi_currently_playing:
+        if id == new_id:
             same_track = "same"
         else:
             same_track = "different"
         duration = track["item"]["duration_ms"]
         progress = track["progress_ms"]
 
-        liked = spotify.current_user_saved_tracks_contains(tracks=[id])[0]
+        try:   
+            liked = spotify.current_user_saved_tracks_contains(tracks=[id])[0]
+        except:
+            liked = False
+    
     else:
         spotapi_currently_playing = False
         currently_playing = request.args.get("currently_playing") == "True"
@@ -135,10 +138,11 @@ def current_track_xhr():
             same_track = "different"
         duration = 0
         progress = 0
+        liked = False
     
     # getting more info to pass through to page
     
-    
+    currently_playing = spotapi_currently_playing
 
     returnArray = {"duration": duration, "progress": progress, "same_track": same_track, "currently_playing": currently_playing, "liked": liked}
 
@@ -158,21 +162,24 @@ def get_artists(artists_json):
 def play():
     spotify = getSpotify()
     spotify.start_playback()
-    return redirect("/currently_playing")
+    #return redirect("/currently_playing")
+    return "playing"
 
 
 @app.route("/pause")
 def pause():
     spotify = getSpotify()
     spotify.pause_playback()
-    return redirect("/currently_playing")
+    #return redirect("/currently_playing")
+    return "pausing"
 
 
 @app.route("/skip")
 def skip():
     spotify = getSpotify()
     spotify.next_track()
-    return redirect("/currently_playing")
+    #return redirect("/currently_playing")
+    return "skipping"
 
 
 @app.route("/like")
@@ -180,7 +187,8 @@ def like():
     spotify = getSpotify()
     id = request.args.get("id")
     spotify.current_user_saved_tracks_add(tracks=[id])
-    return redirect("/currently_playing")
+    #return redirect("/currently_playing")
+    return "liking"
 
 
 @app.route("/unlike")
@@ -188,7 +196,8 @@ def unlike():
     spotify = getSpotify()
     id = request.args.get("id")
     spotify.current_user_saved_tracks_delete(tracks=[id])
-    return redirect("/currently_playing")
+    #return redirect("/currently_playing")
+    return "unliking"
 
 
 def getSpotify():
