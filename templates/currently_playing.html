@@ -149,11 +149,11 @@
 
         //find the color that contrasts the most with the background color and use it for text
         var mostContrastingColor = textColorArray[0];
-        for (let i = 0; i < textColorArray.length; i++) {
-            var textColorAvg = avg(textColorArray[i]);
+        for (const element of textColorArray) {
+            var textColorAvg = avg(element);
 
-            if (Math.abs(avg(textColorArray[i]) - backgroundColorAvg) > Math.abs(avg(mostContrastingColor) - backgroundColorAvg)) {
-                mostContrastingColor = textColorArray[i];
+            if (Math.abs(avg(element) - backgroundColorAvg) > Math.abs(avg(mostContrastingColor) - backgroundColorAvg)) {
+                mostContrastingColor = element;
             }
 
         }
@@ -161,8 +161,8 @@
 
         document.body.style.color = 'rgb(' + textColor[0] + ',' + textColor[1] + ',' + textColor[2] + ')';
         var buttons = document.getElementsByClassName("media-control-button");
-        for (var i = 0; i < buttons.length; i++) {
-            buttons[i].style.color = 'rgb(' + textColor[0] + ',' + textColor[1] + ',' + textColor[2] + ')';
+        for (const element of buttons) {
+            element.style.color = 'rgb(' + textColor[0] + ',' + textColor[1] + ',' + textColor[2] + ')';
         }
 
         document.getElementById('progress-bar-inner').style.backgroundColor = 'rgb(' + textColor[0] + ',' + textColor[1] + ',' + textColor[2] + ')';
@@ -186,14 +186,14 @@
      * This function is called every 2 seconds to get the track info and playback info
      */
     function reqListener() {
-        if (ignoreAutoRefresh == false) {
-            parsed = JSON.parse(this.responseText)
+        if (!ignoreAutoRefresh) {
+            var parsed = JSON.parse(this.responseText)
             console.log(parsed)
 
             var duration = parsed["duration"]
             var progress = parsed["progress"]
 
-            if (parsed["same_track"] == false) {
+            if (!parsed["same_track"]) {
                 location.reload();
 
                 //prevent progress bar smoothly adjusting back to 0
@@ -235,7 +235,7 @@
 
     // send requests to get the track info and playback info
     function getTrackInfo() {
-        ignoreAutoRefresh = false;
+        var ignoreAutoRefresh = false;
         try {
             const req = new XMLHttpRequest();
             req.addEventListener("load", reqListener);
