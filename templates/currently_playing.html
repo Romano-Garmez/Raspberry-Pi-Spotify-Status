@@ -14,7 +14,7 @@
             <div id="text">
                 <h1 class="title">{{title}}</h1>
                 <h2 class="artist">{{artist}}</h2>
-                <h2 class="album">{{album}}</h2>
+                <h2 class="album">{{album}} ({{year}})</h2>
             </div>
         </div>
         <div id="buttons" class="center">
@@ -213,7 +213,7 @@
     function reqListener() {
         if (!ignoreAutoRefresh) {
             var parsed = JSON.parse(this.responseText)
-            console.log(parsed)
+            //console.log(parsed)
 
             var duration = parsed["duration"]
             var progress = parsed["progress"]

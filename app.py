@@ -79,6 +79,7 @@ def currently_playing():
         artist = format_artist(artist)
         title = format_title(title)
         art_url = track["item"]["album"]["images"][0]["url"]
+        year = track["item"]["album"]["release_date"][:4]
         id = track["item"]["id"]
         liked = spotify.current_user_saved_tracks_contains(tracks=[id])[0]
         currently_playing = track["is_playing"]
@@ -88,6 +89,7 @@ def currently_playing():
             artist=artist,
             album=album,
             art_url=art_url,
+            year=year,
             id=id,
             currently_playing=currently_playing,
             liked=liked,
