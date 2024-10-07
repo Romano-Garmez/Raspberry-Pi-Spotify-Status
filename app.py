@@ -144,9 +144,9 @@ def current_track_xhr():
     
     currently_playing = spotapi_currently_playing
 
-    returnArray = {"progress": progress, "duration": duration, "same_track": same_track, "currently_playing": currently_playing, "liked": liked}
+    return_array = {"progress": progress, "duration": duration, "same_track": same_track, "currently_playing": currently_playing, "liked": liked}
 
-    return returnArray
+    return return_array
 
 # end of html pages, now just assorted methods
 

@@ -136,12 +136,9 @@
     }
 
     function setColors() {
+        // have colorthief get background color, and palette to choose from for text color
         var backgroundColor = colorThief.getColor(img);
         var textColorArray = colorThief.getPalette(img);
-
-        //for debugging
-        //console.log(backgroundColor);
-        //console.log(textColorArray);
 
         //set background color
         document.body.style.backgroundColor = 'rgb(' + backgroundColor[0] + ',' + backgroundColor[1] + ',' + backgroundColor[2] + ')';
@@ -149,14 +146,42 @@
 
         //find the color that contrasts the most with the background color and use it for text
         var mostContrastingColor = textColorArray[0];
+
+        // go through text color palette to determine what contrasts well
         for (const element of textColorArray) {
-            var textColorAvg = avg(element);
+            var diffColorElement = Math.abs(avg(element) - backgroundColorAvg);
+            var diffColorBest = Math.abs(avg(mostContrastingColor) - backgroundColorAvg);
 
-            if (Math.abs(avg(element) - backgroundColorAvg) > Math.abs(avg(mostContrastingColor) - backgroundColorAvg)) {
+            if (diffColorElement > diffColorBest) {
                 mostContrastingColor = element;
-            }
 
+            }
         }
+
+        // colorDiff calculates the distance between the background color and the selected text color
+        var colorDiff = avg(mostContrastingColor) - backgroundColorAvg;
+
+        //debugging color choices
+        //console.log("background color avg is " + backgroundColorAvg);
+        // console.log("best selected text color avg is " + avg(mostContrastingColor));
+        // console.log("color diff is " + colorDiff);
+
+        // if the color difference is too low, override the text color to either white or black
+        if (Math.abs(colorDiff) < 50) {
+            console.log("color diff is too low, overriding text color");
+
+            var black = [0, 0, 0];
+            var white = [255, 255, 255];
+
+            if (avg(mostContrastingColor) > 128) {
+                mostContrastingColor = black;
+            } else {
+                mostContrastingColor = white;
+            }
+        }
+
+
+        //set text color on page
         var textColor = mostContrastingColor;
 
         document.body.style.color = 'rgb(' + textColor[0] + ',' + textColor[1] + ',' + textColor[2] + ')';
