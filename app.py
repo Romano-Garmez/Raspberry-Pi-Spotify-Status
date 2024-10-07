@@ -69,18 +69,19 @@ def sign_out():
 
 @app.route("/currently_playing")
 def currently_playing():
-    spotify = getSpotify()
+    spotify = get_spotify()
     track = spotify.current_user_playing_track()
-    if not track is None:
+    if track is not None:
         title = track["item"]["name"]
         artist = get_artists(track["item"]["artists"])
         album = track["item"]["album"]["name"]
-        album = formatAlbum(title, album)
-        artist = formatArtist(artist)
-        title = formatTitle(title)
+        album = format_album(title, album)
+        artist = format_artist(artist)
+        title = format_title(title)
         art_url = track["item"]["album"]["images"][0]["url"]
-        id = track["item"]["id"]
-        liked = spotify.current_user_saved_tracks_contains(tracks=[id])[0]
+        year = track["item"]["album"]["release_date"][:4]
+        song_id = track["item"]["id"]
+        liked = spotify.current_user_saved_tracks_contains(tracks=[song_id])[0]
         currently_playing = track["is_playing"]
         return render_template(
             "currently_playing.html",
@@ -88,7 +89,8 @@ def currently_playing():
             artist=artist,
             album=album,
             art_url=art_url,
-            id=id,
+            year=year,
+            song_id=song_id,
             currently_playing=currently_playing,
             liked=liked,
             json=json.dumps(track, indent=2),
@@ -98,7 +100,7 @@ def currently_playing():
 # debugging
 @app.route("/debug")
 def debug():
-    spotify = getSpotify()
+    spotify = get_spotify()
     track = spotify.current_user_playing_track()
     duration = track["item"]["duration_ms"]
     progress = track["progress_ms"]
@@ -109,15 +111,15 @@ def debug():
 # pinged every ~2 sec to see if refresh of page is required
 @app.route("/current_track_xhr")
 def current_track_xhr():
-    spotify = getSpotify()
+    spotify = get_spotify()
     track = spotify.current_user_playing_track()
 
-    if not track is None:
+    if track is not None:
         new_id = track["item"]["id"]
-        id = request.args.get("id")
+        song_id = request.args.get("id")
         spotapi_currently_playing = track["is_playing"]
         currently_playing = request.args.get("currently_playing") == "True"
-        if id == new_id:
+        if song_id == new_id:
             same_track = True
         else:
             same_track = False
@@ -125,8 +127,8 @@ def current_track_xhr():
         progress = track["progress_ms"]
 
         try:   
-            liked = spotify.current_user_saved_tracks_contains(tracks=[id])[0]
-        except:
+            liked = spotify.current_user_saved_tracks_contains(tracks=[song_id])[0]
+        except spotipy.exceptions.SpotifyException:
             liked = False
     
     else:
@@ -144,9 +146,9 @@ def current_track_xhr():
     
     currently_playing = spotapi_currently_playing
 
-    returnArray = {"progress": progress, "duration": duration, "same_track": same_track, "currently_playing": currently_playing, "liked": liked}
+    return_array = {"progress": progress, "duration": duration, "same_track": same_track, "currently_playing": currently_playing, "liked": liked}
 
-    return returnArray
+    return return_array
 
 # end of html pages, now just assorted methods
 
@@ -160,47 +162,42 @@ def get_artists(artists_json):
 
 @app.route("/play")
 def play():
-    spotify = getSpotify()
+    spotify = get_spotify()
     spotify.start_playback()
-    #return redirect("/currently_playing")
     return "playing"
 
 
 @app.route("/pause")
 def pause():
-    spotify = getSpotify()
+    spotify = get_spotify()
     spotify.pause_playback()
-    #return redirect("/currently_playing")
     return "pausing"
 
 
 @app.route("/skip")
 def skip():
-    spotify = getSpotify()
+    spotify = get_spotify()
     spotify.next_track()
-    #return redirect("/currently_playing")
     return "skipping"
 
 
 @app.route("/like")
 def like():
-    spotify = getSpotify()
-    id = request.args.get("id")
-    spotify.current_user_saved_tracks_add(tracks=[id])
-    #return redirect("/currently_playing")
+    spotify = get_spotify()
+    song_id = request.args.get("id")
+    spotify.current_user_saved_tracks_add(tracks=[song_id])
     return "liking"
 
 
 @app.route("/unlike")
 def unlike():
-    spotify = getSpotify()
-    id = request.args.get("id")
-    spotify.current_user_saved_tracks_delete(tracks=[id])
-    #return redirect("/currently_playing")
+    spotify = get_spotify()
+    song_id = request.args.get("id")
+    spotify.current_user_saved_tracks_delete(tracks=[song_id])
     return "unliking"
 
 
-def getSpotify():
+def get_spotify():
     cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
     auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
@@ -208,29 +205,29 @@ def getSpotify():
     return spotipy.Spotify(auth_manager=auth_manager)
 
 
-def shortenText(string, length):
+def shorten_text(string, length):
     return string[:length] + "..."
 
 
-def formatTitle(title):
+def format_title(title):
     title = re.sub("\(feat\. .+\)", "", title)
     if len(title) > maxTitleLength:
-        title = shortenText(title, maxTitleLength)
+        title = shorten_text(title, maxTitleLength)
     return title
 
 
-def formatArtist(artist):
+def format_artist(artist):
     if len(artist) > maxArtistLength:
-        return shortenText(artist, maxArtistLength)
+        return shorten_text(artist, maxArtistLength)
     return artist
 
 
-def formatAlbum(title, album):
+def format_album(title, album):
     if len(album) > maxAlbumLength:
         if album == title:
             return ""
         else:
-            return shortenText(album, maxAlbumLength)
+            return shorten_text(album, maxAlbumLength)
     return album
 
 

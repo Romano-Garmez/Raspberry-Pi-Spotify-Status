@@ -18,7 +18,7 @@
     turnOffRequest.send(null);
 
     function reqListener() {
-        parsed = JSON.parse(this.responseText)
+        var parsed = JSON.parse(this.responseText)
         console.log(parsed)
 
         if (parsed["same_track"] === false) {
