@@ -80,8 +80,8 @@ def currently_playing():
         title = format_title(title)
         art_url = track["item"]["album"]["images"][0]["url"]
         year = track["item"]["album"]["release_date"][:4]
-        id = track["item"]["id"]
-        liked = spotify.current_user_saved_tracks_contains(tracks=[id])[0]
+        song_id = track["item"]["id"]
+        liked = spotify.current_user_saved_tracks_contains(tracks=[song_id])[0]
         currently_playing = track["is_playing"]
         return render_template(
             "currently_playing.html",
@@ -90,7 +90,7 @@ def currently_playing():
             album=album,
             art_url=art_url,
             year=year,
-            id=id,
+            song_id=song_id,
             currently_playing=currently_playing,
             liked=liked,
             json=json.dumps(track, indent=2),
@@ -116,10 +116,10 @@ def current_track_xhr():
 
     if track is not None:
         new_id = track["item"]["id"]
-        id = request.args.get("id")
+        song_id = request.args.get("id")
         spotapi_currently_playing = track["is_playing"]
         currently_playing = request.args.get("currently_playing") == "True"
-        if id == new_id:
+        if song_id == new_id:
             same_track = True
         else:
             same_track = False
@@ -127,8 +127,8 @@ def current_track_xhr():
         progress = track["progress_ms"]
 
         try:   
-            liked = spotify.current_user_saved_tracks_contains(tracks=[id])[0]
-        except:
+            liked = spotify.current_user_saved_tracks_contains(tracks=[song_id])[0]
+        except spotipy.exceptions.SpotifyException:
             liked = False
     
     else:
@@ -184,16 +184,16 @@ def skip():
 @app.route("/like")
 def like():
     spotify = get_spotify()
-    id = request.args.get("id")
-    spotify.current_user_saved_tracks_add(tracks=[id])
+    song_id = request.args.get("id")
+    spotify.current_user_saved_tracks_add(tracks=[song_id])
     return "liking"
 
 
 @app.route("/unlike")
 def unlike():
     spotify = get_spotify()
-    id = request.args.get("id")
-    spotify.current_user_saved_tracks_delete(tracks=[id])
+    song_id = request.args.get("id")
+    spotify.current_user_saved_tracks_delete(tracks=[song_id])
     return "unliking"
 
 
