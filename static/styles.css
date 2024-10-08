@@ -67,7 +67,7 @@
 
 #progress-bar-inner{
     width:0%;
-    height:100%;
+    height:100px;
     background-color:black;
     transition:2000ms linear;
 }
