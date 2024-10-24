@@ -28,6 +28,14 @@ import json
 import sys
 import re
 
+debug = False
+
+if debug:
+    # Load environment variables from .env file
+    from dotenv import load_dotenv
+
+    load_dotenv()  # take environment variables from .env.
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(64)
 app.config["SESSION_TYPE"] = "filesystem"
@@ -97,6 +105,7 @@ def currently_playing():
         )
     return render_template("not_playing.html")
 
+
 # debugging
 @app.route("/debug")
 def debug():
@@ -126,11 +135,11 @@ def current_track_xhr():
         duration = track["item"]["duration_ms"]
         progress = track["progress_ms"]
 
-        try:   
+        try:
             liked = spotify.current_user_saved_tracks_contains(tracks=[song_id])[0]
         except spotipy.exceptions.SpotifyException:
             liked = False
-    
+
     else:
         spotapi_currently_playing = False
         currently_playing = request.args.get("currently_playing") == "True"
@@ -141,14 +150,21 @@ def current_track_xhr():
         duration = 0
         progress = 0
         liked = False
-    
+
     # getting more info to pass through to page
-    
+
     currently_playing = spotapi_currently_playing
 
-    return_array = {"progress": progress, "duration": duration, "same_track": same_track, "currently_playing": currently_playing, "liked": liked}
+    return_array = {
+        "progress": progress,
+        "duration": duration,
+        "same_track": same_track,
+        "currently_playing": currently_playing,
+        "liked": liked,
+    }
 
     return return_array
+
 
 # end of html pages, now just assorted methods
 
