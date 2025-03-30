@@ -20,6 +20,7 @@ Run app.py
     Alternatively, run using the launch.json under .vscode/ with the VSCode debugger
 """
 
+from http.client import HTTPException
 import os
 from flask import Flask, session, request, redirect, render_template
 from flask_session import Session
@@ -211,6 +212,16 @@ def unlike():
     song_id = request.args.get("id")
     spotify.current_user_saved_tracks_delete(tracks=[song_id])
     return "unliking"
+
+@app.errorhandler(HTTPException)
+def handle_exception(e):
+    # Handle HTTP exceptions
+    return render_template("error.html", error=e), e.code
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    # Handle other exceptions
+    return render_template("error.html", error=e), e.code
 
 
 def get_spotify():

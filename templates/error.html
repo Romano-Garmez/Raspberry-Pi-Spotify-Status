@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{%block title %}
+<title>Error</title>
+{%endblock%}
+
+{% block main %}
+<!--wooo nothing is playing rn-->
+<div id="outer">
+    <div id="center">
+        <h1 class="not-playing">Error Encountered</h1>
+        <h2 class="text">{{error}}</h2>
+
+        <a onclick="reload()" id="reload-button" class="btn btn-default media-control-button"><i
+                class="material-icons">refresh</i></a>
+    </div>
+</div>
+
+<script>
+    function reload() {
+        location.reload();
+    }
+</script>
+
+{% endblock %}
