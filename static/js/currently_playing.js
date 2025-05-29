@@ -185,9 +185,17 @@ function reqListener() {
         if (parsed["currently_playing"]) {
             playIconElement.textContent = "pause";
             document.getElementById('play-pause-button').onclick = pause;
+
+            var turnOnRequest = new XMLHttpRequest();
+            turnOnRequest.open("GET", "http://localhost:9000/TurnOnScreen", true); // false for synchronous request
+            turnOnRequest.send(null);
         } else {
             playIconElement.textContent = "play_arrow";
             document.getElementById('play-pause-button').onclick = play;
+
+            var turnOffRequest = new XMLHttpRequest();
+            turnOffRequest.open("GET", "http://localhost:9000/TurnOffScreen", true); // false for synchronous request
+            turnOffRequest.send(null);
         }
 
         // Update the like button based on auto refresh
