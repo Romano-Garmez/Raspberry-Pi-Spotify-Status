@@ -1,3 +1,20 @@
+/* Layout Containers */
+html, body {
+    max-width: 100%;
+    overflow: hidden; /* Hide scrollbars */
+}
+
+#outer {
+    width: 100%;
+    display: flex;
+    padding: 2%;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
 #left {
     width: 50%;
     float: left;
@@ -9,10 +26,15 @@
     flex-grow: 1;
 }
 
-.center {
-    display: inline-block;
-    margin: 0 auto;
-    text-align: center;
+/* Content Containers */
+#album-art {
+    width: 100%;
+}
+
+#text-outer {
+    width: 100%;
+    height: 80%;
+    display: table;
 }
 
 #text {
@@ -31,44 +53,30 @@
     clear: both;
     width: 100%;
     height: 20%;
-    
 }
 
-#outer {
-    width: 100%;
-    display: flex;
-    padding: 2%;
-    margin: 0;
+/* Progress Bar */
+#progress-bar {
     position: absolute;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-}
-
-#album-art {
+    bottom: 0px;
+    top: 97%;
     width: 100%;
+    height: 3%;
+    background-color: white;
 }
 
-#text-outer {
-    width: 100%;
-    height: 80%;
-    display: table;
+#progress-bar-inner {
+    width: 0%;
+    height: 100%;
+    background-color: black;
+    transition: 2000ms linear;
 }
 
-#progress-bar{
-    position: absolute;
-    bottom:0px;
-    top:97%;
-    width:100%;
-    height:3%;
-    background-color:white;
-}
-
-#progress-bar-inner{
-    width:0%;
-    height:100%;
-    background-color:black;
-    transition:2000ms linear;
+/* Typography & Utility Classes */
+.center {
+    display: inline-block;
+    margin: 0 auto;
+    text-align: center;
 }
 
 .title {
@@ -91,16 +99,13 @@
     font-size: 5vw;
 }
 
-.not-playing{
+.not-playing {
     font-weight: 900;
     font-size: 10.5vw;
 }
-.sign-in{
+
+.sign-in {
     text-align: center;
     font-weight: 900;
     font-size: 10.5vw;
-}
-html, body {
-    max-width: 100%;
-    overflow: hidden; /* Hide scrollbars */
 }
